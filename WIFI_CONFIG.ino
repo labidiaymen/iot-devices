@@ -6,6 +6,7 @@
 #endif
 #include <neotimer.h>
 #define CONNEXION_LOST_DELAY 5000
+#define LED_BUILTIN 2
 Neotimer wifiLostTimer = Neotimer(CONNEXION_LOST_DELAY);
 
 
@@ -18,7 +19,7 @@ void setupWIFI()
     Serial.begin(115200);
     pinMode(LED_BUILTIN, OUTPUT);
     if (!wifiConnect()) {
-        //smartConfig();
+        smartConfig();
     }
 }
 
