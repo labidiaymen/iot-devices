@@ -1,4 +1,10 @@
-
+/**
+ * Author Labidi Aymen <labidi@aymen.co>
+ * Vaulab iot sensor project 
+ * 2021
+ * Handling wifi configuration (EspTouch), reconnecting when connexion is lost
+ */
+ 
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
 #elif defined(ESP32)
@@ -23,7 +29,6 @@ void setupWIFI()
     }
 }
 
-/* ------Auto Connect or SmartConfig-------------- */
 
 bool wifiConnect()
 {
@@ -47,12 +52,10 @@ bool wifiConnect()
 
 void smartConfig()
 {
-    /** 連線到無線網路 */
-    // 設定模式為 STA ( MODE 只能是 STA ) 才能使用 smartconfig
+   
     WiFi.mode(WIFI_STA);
     WiFi.beginSmartConfig();
     Serial.println("Start SmartConfig.");
-    /* Wait for SmartConfig packet from mobile */
     Serial.println("Waiting for SmartConfig. Launch Mobile App (ex: ESP-TOUCH ) to progress SmartConfig.");
     while (!WiFi.smartConfigDone()) {
         delay(500);
@@ -61,7 +64,6 @@ void smartConfig()
     Serial.println("");
     Serial.println("SmartConfig done.");
 
-    /* Wait for WiFi to connect to AP */
     Serial.print("WiFi Connecting.");
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
