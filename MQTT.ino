@@ -15,7 +15,6 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 long lastReconnectAttempt = 0;
 const char* mqtt_server = "192.168.1.186";
-const char* topic = "esp32/power/watts";
 
 void MQTTSetup(){
    client.setServer(mqtt_server, 1883);
@@ -49,6 +48,6 @@ void MQTTLoop(){
   }
 }
 
-void MQTT_Publish(char* message){
-   client.publish(topic,String(message).c_str());
+void MQTT_Publish(const char* topic, const char* message){
+   client.publish(String(topic).c_str(),String(message).c_str());
 }
