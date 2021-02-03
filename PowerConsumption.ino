@@ -12,7 +12,7 @@
 #define START_UP_DELAY 10000
 #define TOTAL_MESUREMENT_TO_SEND 30
 #define CT_SENSOR_PIN 34
-#define CT_SENSOR_CALIBRATION 28
+#define CT_SENSOR_CALIBRATION 16
 // END CONSTANTS
 
 EnergyMonitor emon1;
@@ -34,7 +34,14 @@ void PowerConsumptionLoop(){
                                                                        // If it's been longer then 1000ms since we took a measurement, take one now!
   if(currentMillis - lastMeasurement > MESUREMENT_INTEVAL){
     double amps = emon1.calcIrms(IRMS_VALUE);                           // Calculate Irms only
-    double watt = amps * CURRENT_VOLTAGE;
+    if(amps <= 0.5){
+      amps = amps - 0.2;
+     }
+     if(amps <= 0.25){
+      amps =  0;
+     }
+     double watt = amps * CURRENT_VOLTAGE;
+
 
     lastMeasurement = millis();
                                                                         // Readings are unstable the first 5 seconds when the device powers on
@@ -43,10 +50,10 @@ void PowerConsumptionLoop(){
 
     }else{
       #if defined(DEBUG)
-        Serial.println("Watts");        
-        Serial.print( watt);
-        Serial.println("Amps" );
-        Serial.print( amps);
+        Serial.print("Watts");        
+        Serial.println( watt);
+        Serial.print("Amps" );
+        Serial.println( amps);
       #endif
   
       wattsMeasurements[measureIndex] = watt;
@@ -76,8 +83,8 @@ void PowerConsumptionLoop(){
     ampsMesurementsReadings += "]";
     
     String jsonMesurements = "{\"apms\": " + ampsMesurementsReadings + ",\"watts\": "+wattsMesurementsReadings+ "}";
-    Serial.println(jsonMesurements);
-    //MQTT_Publish(POWER_CONSUMPTION_TOPIC,String(jsonMesurements).c_str());
+    // Serial.println(jsonMesurements);
+    MQTT_Publish(POWER_CONSUMPTION_TOPIC,String(jsonMesurements).c_str());
     measureIndex = 0;
   }
 }
