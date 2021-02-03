@@ -3,7 +3,7 @@
  * Vaulab iot sensor project 
  * 2021
  */
-//#define POWER_CONSUMPTION_SENSOR
+#define POWER_CONSUMPTION_SENSOR
 #define DEBUG
 void setup(){
     Serial.begin(115200);
@@ -20,6 +20,12 @@ void setup(){
 void loop(){
   wifiLoop();
   MQTTLoop();
+  float h = analogRead(0);
+if (!isnan(h))
+{
+//Serial.println(h/1023*100);
+
+}
   #if defined(POWER_CONSUMPTION_SENSOR)
     PowerConsumptionLoop();
   #endif

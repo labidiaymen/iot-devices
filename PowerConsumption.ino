@@ -18,7 +18,8 @@
 EnergyMonitor emon1;
 unsigned long lastMeasurement = 0;
 unsigned long timeFinishedSetup = 0;
-short measurements[TOTAL_MESUREMENT_TO_SEND];
+short wattsMeasurements[TOTAL_MESUREMENT_TO_SEND];
+short ampsMeasurements[TOTAL_MESUREMENT_TO_SEND];
 short measureIndex = 0;
 const char *POWER_CONSUMPTION_TOPIC = "esp32/power/watts";
 
@@ -42,10 +43,13 @@ void PowerConsumptionLoop(){
 
     }else{
       #if defined(DEBUG)
-        Serial.println(watt);
+        Serial.println("Watts");        
+        Serial.print( watt);
+        Serial.println("Amps" );
+        Serial.print( amps);
       #endif
   
-      measurements[measureIndex] = watt;
+      wattsMeasurements[measureIndex] = watt;
       measureIndex++;
     }
   }
@@ -54,17 +58,26 @@ void PowerConsumptionLoop(){
   if (measureIndex == TOTAL_MESUREMENT_TO_SEND) {
   
                                                                          // Construct the JSON to send to AWS
-    String msg = "{\"readings\": [";
+    String wattsMesurementsReadings = "[";
+    String ampsMesurementsReadings = "[";
 
     for (short i = 0; i <= TOTAL_MESUREMENT_TO_SEND-2; i++){
-      msg += measurements[i];
-      msg += ",";
+      wattsMesurementsReadings += wattsMeasurements[i];
+      wattsMesurementsReadings += ",";
+
+      ampsMesurementsReadings += ampsMeasurements[i];
+      ampsMesurementsReadings += ",";
     }
 
-    msg += measurements[TOTAL_MESUREMENT_TO_SEND-1];
-    msg += "]}";
+    wattsMesurementsReadings += wattsMeasurements[TOTAL_MESUREMENT_TO_SEND-1];
+    wattsMesurementsReadings += "]";
     
-    MQTT_Publish(POWER_CONSUMPTION_TOPIC,String(msg).c_str());
+    ampsMesurementsReadings += ampsMeasurements[TOTAL_MESUREMENT_TO_SEND-1];
+    ampsMesurementsReadings += "]";
+    
+    String jsonMesurements = "{\"apms\": " + ampsMesurementsReadings + ",\"watts\": "+wattsMesurementsReadings+ "}";
+    Serial.println(jsonMesurements);
+    //MQTT_Publish(POWER_CONSUMPTION_TOPIC,String(jsonMesurements).c_str());
     measureIndex = 0;
   }
 }
