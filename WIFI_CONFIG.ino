@@ -15,17 +15,12 @@
 #define LED_BUILTIN 2
 Neotimer wifiLostTimer = Neotimer(CONNEXION_LOST_DELAY);
 
-
-bool autoConfig();
-void smartConfig();
-void printWifiStatus();
-
 void setupWIFI()
 {
     Serial.begin(115200);
     pinMode(LED_BUILTIN, OUTPUT);
     if (!wifiConnect()) {
-        smartConfig();
+       // smartConfig();
     }
 }
 

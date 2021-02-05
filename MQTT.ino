@@ -21,13 +21,14 @@ void MQTTSetup(){
    Serial.println("MQTT server setup ");
    Serial.println("MQTT server IP ");
    Serial.print(mqtt_server);
-   
+    subscribeToPushEvent();
 }
 
 boolean reconnect() {
   if (client.connect("arduinoClient")) {
-    //client.subscribe("inTopic");
+     client.subscribe("pushEvent/822141");
   }
+ 
   return client.connected();
 }
 

@@ -5,20 +5,21 @@
  */
 #include "DHT.h"
 
-#define DHT11_PIN 4
+#define DHT11_PIN 2
 #define DHTTYPE DHT11
 
-#define TEMPERATURE_MESUREMENT_INTEVAL 5000
+#define TEMPERATURE_MESUREMENT_INTEVAL 60000
 float temperature;
 float humidity;
-uint8_t DHTPin = D4; 
 unsigned long temperatureLastMeasurement = 0;
 const char *TEMPERATURE_CONSUMPTION_TOPIC = "temperature/sensors9352874";
 
-DHT dht(DHTPin, DHTTYPE);    
+DHT dht(DHT11_PIN, DHTTYPE);    
 
 void temperatureHumiditySetup(){
-   pinMode(DHTPin, INPUT);
+  Serial.println(D4);
+
+   pinMode(DHT11_PIN, INPUT);
    dht.begin();
 }
 
